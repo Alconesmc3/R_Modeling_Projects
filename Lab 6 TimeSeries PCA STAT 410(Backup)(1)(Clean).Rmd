@@ -1,0 +1,167 @@
+---
+title: 'Time Series and PCA'
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+date: "December 8, 2017"
+---
+
+### Names:Adolfo Huerta, Daniel Meza
+
+##Problem 1 - Time Series
+Suppose the year is 2008.  Researchers are interested in developing a model to predict the US Beer production in 2010.  They have data from 1980 to 2007 on the US Beer Production (measured in millions of barrels produced) in the file beerprod.csv.  They wish to try several time series approaches to make this prediction and want to evaluate which method is the best approach.
+
+
+>Based on the different suggested methods, which one is the best apporach to predict the US beer production in 2010 using data from the years 2008 to 2007. 
+            
+
+>The response variable of interest is Beer and this variable is quantitative since it measured in the number of barrels produced in millions.  
+
+
+
+>The explanantory variable is year and this variable is qualitaive since it is categorical. 
+
+The researchers first decide to plot the time series. 
+
+
+```{r}
+#Provide R code and output/graphs 
+#install.packages("readr")
+library(readr)
+# beerprod <- read_csv("~/R/Data Sets/beerprod.csv")
+beerprod <- read_csv("~/Desktop/ucsc/beerprod.csv")
+attach(beerprod)
+View(beerprod)
+TS1<-ts(Beer,start = 1980,frequency=4)
+ts.plot(TS1,ylab="beer")
+
+up<-stl(TS1,"periodic")
+plot(up)
+
+
+getwd()
+```
+
+>We can observe a seasonal trend from the decomposition plot that is consistent throughout every year but since data was only collect every year then we can account for the seasonal trend.  There is no sign of a secular trend since the line goes up and then back down a few times. I would agree that there is some cyclical trend since the data behaves like a sine or cosine distribution.
+
+
+>Since our explanatory variable is year, that means that we only have data reported after each year. Therefore, we cannot look at within the years to try and find a seasonal trend in the data.
+
+The researchers decide to take the least squares regression approach to model the data.  They use the following model: $y_t = \beta_0 + \beta_1 t + \beta_2 t^2$
+
+Perform the regression analysis, CREATE A PLOT of the fitted quadratic line over the original time series, data, and assess the suitability of the model.
+
+```{r}
+#Provide R code and output/graphs 
+
+t2=Year*Year
+model.ts=lm(Beer~Year+t2)
+plot(Year,Beer)
+plot(model.ts)
+
+ts.plot(TS1,ylab="beer")+
+lines(Year,model.ts$fitted.values,col=3)
+summary(model.ts)
+
+# install.packages("TTR")
+# install.packages("zoo")
+# library(TTR)
+
+lines
+
+
+
+```
+
+>I could not find the assumptions specificly for time series model but since we did use a linear model I will evaluate those assumptions. We cannot observe a linear relationship between the variable beer and year. The normailty assumption look great with only one or two data points away from the normal line.The constant variance does not seem to be satisfied since we can observe some fanning from left to right in the data points. Independence of the residuals is satisfied since they are scattered randomly across the plot. Finally, there is no outliers in the data that could affect our results.   
+
+Based on the results, both of th explanatory variables are significant with a specific p-value of 8.68e-06. Also, if we tested the general hypothesis it would be significant since it also has a p-value of  8.68e-06. Using the adjusted R-Squared from the summary of the model, we can observe that about only 61 percent of the beer production in millions is explained by the Year. Therefore, I do not think that this is a good fit and that there is room for improvement.   
+
+
+
+>The main reason why the model is not a good fit to predict future values is becuase the adjusted R squared is too low and maybe adding a term to account for the minimal cyclical trend could help. There is too much variability between the fitted line and the spline of the actual data.  Also, as breifly discussed in class auto correlation might have a significant impact on how the data is represented. Therefore, I think it would be importnat to look at a model that considers auto correlation and compare the model to see which is better.
+
+
+
+
+```{r}
+
+PHI<-cor(residuals(model.ts)[1:length(t)-1],residuals(model.ts)[2:length(t)])
+plot.ts(TS1, ylab="US Beer Production (millions of barrels)") +
+lines(Year,model.ts$fitted+PHI*model.ts$residuals[t-1],col=5,lwd=2)
+
+```
+
+
+>By looking at the graphs the overall trend looks the same in both models.The distinction is that the auto correlation model is doing a slighlty better job becuase the first part of the model (1980 to 1982) is closer to the actual data points where the model in the first part was not. Therefore, some of the variance will be reduced making a changed in the adjusted R squared. From about 1984 and on the fit of the model looks similar.
+
+```{r}
+#Provide R code and output/graphs 
+
+plot.ts(TS1, ylab="US Beer Production (millions of barrels)")
+  # lines(Year,SMA(Beer,2),lwd=2,col=2)
+
+
+
+```
+It is clear to me that the last plot using the 2 point moving average only helped with identifying trends in the data but it did not help with the fit of the data. When we plotted the line using 2 point moving average, the line became further away from the data point which will increase the variance and produce low R squared. Therefore, very little of the data for beer prodcution in millionswill be explained by year. 
+
+
+I would use the regression model with auto correaltion becuase it would produce more precise results. Auto correlation is important becuase time series data is not independent from year to year in most cases. Therefore, the year before might explain something important about the next year and could potentially help in the forcasting.  
+
+There are several ways to measure a student's understanding of statistics in an introductory course.  The data set `Grades` contains total scores for students homework, labs, quizzes, projects, and exams.  This course had two 1-hour exams and a 3-hour final.  In addition to a final project worth 20% of the final grade there was an initial small project worth only 5% of the final grade.  The exams were fairly standard statistics exams, but both projects required students to read peer-reviewed research projects, collect their own data, conduct and appropriate statistical analysis, and present their results.  
+
+```{r comment=""}
+#you will need to change the file reference
+# Grades <- read.csv("C:/Users/unfr7323/Google Drive/Courses/STAT 410/FA 17/Labs/Lab 6.5 Time Series PCA/Grades.csv", header=TRUE)
+Grades <- read.csv("~/Desktop/ucsc/Grades.csv", header = TRUE)
+fit<-princomp(Grades[,2:9],cor=T,score=T)
+summary(fit)
+plot(fit,type="lines",main="Scree Plot")
+loadings(fit)
+cor(Grades[,2:9],fit$scores)
+biplot(fit)
+# abline(h=0) #adds x-axis
+# abline(v=0) #adds y-axis
+```
+
+>The variables HW, Final Exam, Labs, Exam2, Final Project, Quiz and Exam1 have the largest loadings/correlations with Principal Component one, in decreasing order, respectively. The first principal component is a measure of the scores received in the Homework, Final Exam, Labs and to some extent the Exam2, Final Project and Exam 1. The score in the Final Exam increases as the scores in Homework, Labs and Exam2 increases, since these are all positively related. They can be interpreted as all positively related by switching the negative values to positive and the positive values to negatives in the correlation matrix output. 
+
+
+ 
+>The variables that have a large loadings/correlations with principal component two would be Project 1 and Exam 2. The second principal component is a measure of the scores reveived in Project 1, or the students comfort with what would be most likely their first statistics research project and to some extent their performance in Exam2. The score in Project 1 increases as the Exam 2 scores decrease. 
+
+
+>Principal component one could be used instead of a weighted average grade for assessment of student effort since it explains about half of the variability for the students final grade and understanding of statistics course. Also, a weighted average grade is calculated by multiplying the score on the categories (i.e. Exams, Projects, Labs, Hw) times the percentage of what it was worth towards the final grade (i.e. Final Project = 20%).  Therefore, since principal component one is a measure of the Homework, Final Exam, Labs, Exam 2, Quiz, and Exam1 which are worth the highest percent towards their final grade, unlike Project 1 only worth 5% of the final grade, then PC1 could be used as an assessment of the students effort. 
+
+
+>Principal component two would tell us that students are not typically intially comfortable with statistical research, even if they are good at taking Exams and do good in other aspects of the class. This is because Principal two tells us that their comfort with their first statistcal research project increases as the scores in Exam two decreases. This could be due to the students performing well in Exam two by attending lectures, doing homework, studying and better understanding their material or memorizing methods, but are not used to reading peer reviewed articles that challenge their problem solving abilities like they typically are when studying for an Exam. 
+
+
+Measuring intelligence is another area where a principal component analysis is often used.  There is not just one test that can be used to accurately measure a person's intelligence - there are several tests that are known to be related to intelligence.  Often intelligence tests can be classified into three groups: spatial reasoning, vocabulary, and memory.  PCA is used to combine multiple measurements into an overall measure of intelligence.  Psychologists call the first component the general intelligence factor, or "g-score".  
+
+The data set `Intelligence` contains test results for 214 people who have taken several intelligence tests.  We use PCA to find the "g-score". 
+
+>The principal component one has the highest loadings/correlations for variables Vocabulary 2, Memory 2, Vocabulary 3, Memory 3, Vocabulary 1 and Spatial Reasoning 2, using a cutoff value of correlation value above 0.6. The magnitudes of the coefficients of the loadings give the contributions of each variable to that component. The total variability in the several measures of intelligence explained by the g-score is about 0.419. Here, we see that if we switch the signs of the correlation values in the correlation matrix for the first component, since they are all negative, that the variables are all positvely related.  This means that the scores in the Vocabulary 2 increase as the scores in the Mem2, Mem3, SR2 and Voc1 increase as well. 
+
+
+
+```{r comment=""}
+#you will need to change the file reference
+# intel <- read.csv("C:/Users/unfr7323/Google Drive/Courses/STAT 410/FA 17/Labs/Lab 6.5 Time Series PCA/Intelligence.csv", header=TRUE)
+intel <- read.csv("~/Desktop/ucsc/Intelligence.csv", header = TRUE)
+fit<-princomp(intel[,-1],cor=T,score=T)
+summary(fit)
+plot(fit,type="lines",main="Scree Plot")
+loadings(fit)
+cor(intel[,-1],fit$scores)
+biplot(fit)
+abline(h=0) #adds x-axis
+abline(v=0) #adds y-axis
+````        
+
+
+
+>The g-score may not accuarately describe an overall intelligence measure for all populations since many populations have multiple languages commonly spoken within them. In the example given about Ellis Island, the Vocabulary test where most likely in the English language, but it was not that case that all immigrants coming from Europe were from English speaking populations/countries. It is possible, that a very intelligent individual with a great memory and spatial reasoning skills could preform badly in the vocabualry test and thus not be allowed into the country because of a lower g-score. Furthermore, the vocabulary test could have biased results since the language it will be give in, will most likely be in the populations standard language (i.e. USA = English) but there may be a large proportion of citizens in that population, that while very intelligent, may speak a different language like Spanish. 
+
