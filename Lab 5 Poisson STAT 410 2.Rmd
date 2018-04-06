@@ -1,0 +1,102 @@
+---
+title: 'Lab 5: Poisson Regression'
+output:
+  word_document: default
+  html_document: default
+date: "put the date, 2017"
+---
+
+### Names:Daniel Meza, Adolfo Huerta
+
+#####What each person contributed to the lab: Daniel attempted problem 2 and Adolfo Attempted problem 1. We reviewed eachothers work and worked together on problem 3.
+
+**Please make sure to show all R code and output after each question so that I can see your work.**  Write a sentence for each numerical value produced describing its meaning in context with the proper units.
+
+##Problem 1
+Consider the `warpbreaks` data set, which is included with R. The data set gives the results of an experiment to determine the effect of wool type (A or B) and tension (low, medium or high) on the number of warp breaks per loom. Data was collected for nine looms for each combination of settings. To view more information about the data set, enter help(warpbreaks). To view the data set, enter the data set name:
+
+```{r comment=""}
+data(warpbreaks)
+```
+
+Suppose that you want to build a model to see how the frequency of warp breaks is effected by wool type, wool tension and the interaction between the two.
+
+As the response variable breaks is a count, it is best modeled as a Poisson distributed variable. The model should have terms for the wool type, wool tension and the interaction between the two.
+  
+To build the model, use the command:
+```{r comment=""}
+breaksmodel<-glm(breaks~wool*tension, warpbreaks, family=poisson)
+```
+
+Once you have created the model object, use the summary function to view the results:
+```{r comment=""}
+summary(breaksmodel)
+```
+
+###1.a. 
+Evaluate the model significance using both general and specific hypotheses. (Don't forget to write out the hypotheses symbolically for each.)
+
+```{r}
+#Provide R code and output/graphs 
+g_stat <- 297.37 - 182.31
+1-pchisq(g_stat, 5)
+
+
+
+```
+
+>$\H_0: \beta_1 = \beta_2 = \beta_3 = \beta_4 = \beta_5 = 0 $
+$\H_0: $ At least one $\beta_i \neq 0 $ for $ i = 1,2,3,4,5$
+
+(G-statistic=115.06, p-value=0) Based on our sample using a significance level .05, we will reject the null and support the alternative that at least one of the varialbes wool and tension, or the interaction between them is a significant predictor of warpbreaks under this model.
+            
+>>
+$\H_0: \beta_1 = 0 $
+$\H_0: \beta_1 \neq 0 $
+Based on the Wald Z-test (z = -5.694, p-value = 1.24e-08) we reject the null hypothesis, and have evidence to support the alternative hypothesis that wool is a significant predictor of our response breaks.
+
+$\H_0: \beta_2 = 0 $
+$\H_0: \beta_2 \neq 0 $
+Based on the Wald Z-test (z = -7.330, p-value = 2.30e-13) we reject the null hypothesis, and have evidence to support the alternative hypothesis that tensionM is a significant predictor of our response breaks.
+
+$\H_0: \beta_3 = 0 $
+$\H_0: \beta_3 \neq 0 $
+Based on the Wald Z-test (z = -7.112, p-value = 1.15e-12) we reject the null hypothesis, and have evidence to support the alternative hypothesis that tensionH is a significant predictor of our response breaks.
+
+$\H_0: \beta_4 = 0 $
+$\H_0: \beta_4 \neq 0 $
+Based on the Wald Z-test (z = 5.224, p-value = 1.75e-07) we reject the null hypothesis, and have evidence to support the alternative hypothesis that the interaction term between woolB and tensionM is a significant predictor of our response breaks.
+$\H_0: \beta_5 = 0 $
+$\H_0: \beta_5 \neq 0 $
+Based on the Wald Z-test (z = 1.450, p-value = 0.147) we fail to reject the null hypothesis, and have evidence to support the alternative hypothesis that the interaction term between woolB and tensionH is not a significant predictor of our response breaks.
+            
+###1.b.             
+Evaluate the model fit. Is there evidence of overdispersion? If so, correct the standard errors and re-evaluate your hypotheses from Part a.
+
+```{r}
+#Provide R code and output/graphs 
+1-pchisq(breaksmodel$deviance, breaksmodel$df.residual)
+mean(warpbreaks$breaks)
+var(warpbreaks$breaks)
+phiover <- (breaksmodel$deviance / breaksmodel$df.residual)
+breaksmodel.disp = glm(breaks~wool*tension, warpbreaks, family=quasipoisson(link = log))
+summary(breaksmodel.disp)
+g_stat2 <- 297.37 - 182.31
+1 - pchisq(g_stat2, 5)
+exp(-0.45663)
+exp(-0.61868)
+exp(-.59580)
+exp(0.63818)
+exp(0.18838)
+```
+
+>From the results of our test that checks if the residual deviance is equal to the degrees of freedom, we reject the null hypothesis (residual deviance = 182.31, d.f. = 48, p-value = 0) and find evidence of overdispersion. After adjusting for overdispersion, we still reject our general null hypothesis (G-stat = 115.06, p-value = 0) and have evidence to support alternative hypothesis. We also find that after fixing the standard erros and thus they becoming larger, we still find $\beta_1$ through $\beta_4$ to be the significant predictors, but it is not the case for $\beta_5$. 
+
+###1.c.             
+Interpret the parameter estimates from this model. 
+
+>$\beta_1$ : On average the number of warp breaks for wool B is 0.633 times the number of breaks for wool A. 
+$\beta_2$ : On average the number of warp breaks for medium tension is 0.539 times the number of breaks for light tension. 
+$\beta_3$ : On average the number of warp breaks for high tension is 0.55 times the number of breaks for light tension. 
+$\beta_4$ : On average the number of warp breaks for a medium tension and wool b is 1.893 times the number of breaks for light tension and wool a. 
+$\beta_5$ : On average the number of warp breaks for a high tension and wool b is 1.207 times the number of breaks for light tension and wool a. 

@@ -1,0 +1,188 @@
+---
+title: 'Lab 3: Model Creation'
+output:
+  word_document: default
+  html_document: default
+date: "put the date, 2017"
+---
+
+### Names:
+
+#####What each person contributed to the lab:
+
+**Please make sure to show all R code and output after each question so that I can see your work.**  Write a sentence for each numerical value produced describing its meaning in context with the proper units.
+
+***
+
+Consider the data, pollution.csv, which measured air pollution in 41 U.S. cities.  The type of air pollution under study is the annual mean concentration of sulfur dioxide (SO2).  The values of six potential explanatory variables were recorded in order to examine the variation in the sulfur dioxide concentrations
+  
+SO2 = the annual mean concentration of sulfur dioxide (micrograms per cubic meter)  
+Temp = the average annual temperature in ?F  
+Comp = number of manufacturing enterprises with 20 or more workers  
+Pop = population size in last census (thousands)  
+Wind = average annual wind speed (mph)  
+Precip = average annual precipitation (inches)
+Pdays = average number of day with precipitation per year  
+
+We want to develop a model relating sulfur dioxide to the six possible explanatory variables to determine which are able to predict air pollution levels within the cities.  Please provide plots or R output to justify your assessments.  Provide detailed description of what each plot or output displays or calculates.
+
+Your goal is to determine the best model. To do so, be sure to provide the following information
+
+##Part 1: Exploratory Data Analysis   
+
+###1.a. 
+Define each variable (response/explanatory, quantitative/categorical)  
+
+>In this study we have the annual mean concentration of sulfur dioxide being our response variable, which is measured as micrograms per cubic meter and is therefore a quantitative variable.  The other variables in our dataset could be considered as explanatory variables, except for the "City" variable, since this is only a column to identify where the data was collected.  For our explanatory variables we can observe that they are all quantitative variables.  Our first being temperature, which is the average annual temperature in Farenheits, has a range of 43.5 degrees to 75.50 degrees, a mean of 55.76 degrees and a standard deviation equal to 7.2277 degrees.  Another explanatory variable "Comp", is the number of manufacturing enterprises with 20 or more workers, it has a mean of 463.1 and a standard deviation of 563.47. We also have the variable "Pop", which is population size in last census in thousands, that has a mean of 608.6 thousand and a standard deviation of 579.113 thousand.  The next explanatory variable is "Wind", which is the average annual wind speed in miles per hour, that has a mean of 9.444 mph and a standard deviation of 1.428644 mph. We also have "Precip", which is the average annual precipitation measured in inches, that has a mean of 36.77 inches and a standard deviation of 11.77 inches. Finally, we have the variable "Pdays", which is the average number of days with precipitation per year, it has a mean of 113.9 days and a standard deviation of 26.506 days. 
+
+###1.b. 
+Check for Linear Relationships (Tip: if any extreme outliers, try removing them to see how things look.) Is there any evidence that higher-order terms should be included?  
+            
+```{r}
+#Provide R code and output/graphs 
+library(readr)
+library(mosaic)
+pollution <- read_csv("~/Desktop/ucsc/pollution.csv")
+View(pollution)
+attach(pollution)
+summary(pollution)
+names(pollution)
+sd(City)
+sd(SO2)
+sd(Temp)
+sd(Comp)
+sd(Pop)
+sd(Wind)
+sd(Precip)
+sd(Pdays)
+plot(Temp, SO2)
+plot(Comp, SO2)
+plot(Pop, SO2, xlim = c(0,1500))
+plot(Wind, SO2)
+plot(Precip, SO2)
+plot(Pdays, SO2)
+
+pol.model<-lm(SO2~Temp+Comp+Pop+Wind+Precip+Pdays)
+par(mfrow=c(2,2))
+plot((pol.model))
+
+
+#Here is a hint on how to remove one row from a data set, say row 2
+#when we use [] brackets, we can reference certain rows and columns of the data
+#so this code says to remove row 11 (rows are before the comma) but keep all columns (Columns are after the comma)
+#pollution[-11,]
+```
+
+>There appears to be a negative linear relationship with the average annual temperature in Farenheits.  It appears that as the the temperature increases, the SO2 levels decreases. From my second plot comparing Comp variable with SO2 levels, it appears there is a small positive linear relationship with Comp, so as the number of companies with twenty or more people in the city increases, we also have an increase in SO2 levels.  From this plot, we can also observe that there might be an outlier for this data, which would need to be investigated.  There does not appear to be a linear relationship between the population and the SO2 levels because there is no visible pattern in the scatterplot. From our scatterplot with Wind and SO2 levels it appears there is a negative linear relationship between these two variables. From the scatterplot comparing precipitation with SO2 levels, it does not appear as there is a linear relationship.  Instead, there is evidence that a higher order term might be needed, which appears to be a quadratic term. Finally, between the variables Pdays and SO2, there does appear to be a positive linear relationship in this case.  We can see from the scatterplot that as the number of Pdays increases, the SO2 level also increases. 
+
+###1.c.
+Check of collinearity (remember to check your 3b notes - how do you procede in the presence of collinearity?)
+                
+```{r}
+#Provide R code and output/graphs  
+library(car)
+vif(pol.model)
+
+```
+    
+    
+>We do appear to have collinearity with the variables Comp and Pop, since their VIF scores are 14.703 and 14.34, respectively.  These scores are greater than five and more importantly greater than ten, which implies collinearity.  In the presence of collinearity, we would create two separate models, which each has one of the variables but not the other.  We would then follow up by comparing these two models, by the assumptions and the Adjusted R-squared to decide which one is better and what variable should be removed. 
+
+
+##Part 2: Use two variable selection methods 
+(One out of R2 and Cp, and one out of Forward and Backward):  
+
+###2.a. 
+Choose one:  Adjusted R2 or Mallow's Cp to select a subset of 2 best models
+    
+```{r}
+#Provide R code and output/graphs  
+library(leaps)
+pol2_model <- leaps(x=pollution[,3:8], y = SO2, method = "adjr2", nbest = 2, names=names(pollution[3:8]))
+pol2_model
+
+
+```
+
+>From this analysis, we would choose the models with adjusted R-squared of 0.6046 and 0.5930 since these are the largest two values.  These are the model without Pdays variable and the full model. 
+
+
+###2.b. 
+Choose one:  Forward Selection or Backward Elimination  
+    
+```{r}
+#Provide R code and output/graphs 
+back.elem.lm <-step(pol.model,scope=list(lower=~1,upper=pol.model),direction = "backward",trace=T)
+back.elem.lm
+plot(back.elem.lm)
+summary(back.elem.lm)
+vif(back.elem.lm)
+
+```
+    
+>From the backwards elimination, we can see that the only variable that gets discarded from the full model is Pdays, until we reach the lowest possible AIC score of -61.51.  This leaves us with a linear model that is better than the full, but does not seem that great since the Adjusted-R squared is only 0.6046. After having the best model, we would still need to preform follow up analysis like significance testing and testing the assuptions. From the plots and summary output of this back.elem.lm model, we can see that it does have an F-statistic of 13.23 and a p-value of 2.888e-07, which tells us that this model have some predictive power over the response variable.  It also passes the first five assumptions, but fails to pass the VIF assumption since the VIF score for Comp and Pop are still about 14 to 15.  
+
+```{r}
+#Provide R code and output/graphs  
+base <- lm(SO2~Temp)
+for.lm <- step(base, scope = list(lower=~1, upper=pol.model), direction = "forward",trace = T)
+for.lm
+summary(for.lm)
+
+```
+
+>We observe the same pattern from the forward selection process as the backwards elimination. Also we attain the same model at the end. 
+
+###2.c. 
+Compare and contrast the final model options between the two methods you used 
+    
+>Judging from the two methods I used, the final model given by the backwards elimination was the best option due to the reduction of collinearity by removing Pdays variable.  In the full model, we had an adjusted R-squared of one for all models except one model, which was most likely caused by the collinearity between Pdays and precipitation. Also, we can see that the assumptions were met for both models, except for the VIF assumption that was not met by either model. 
+
+
+##Part 3: Detailed description of the model formulation 
+Why did you choose the models you chose - provide statistical and practical evidence. Provide necessary code and output to support your decisions.  
+
+###3.a. 
+Detailed description of assessment of model assumptions  
+    
+```{r}
+#Provide R code and output/graphs 
+plot(pol.model)
+plot(back.elem.lm)
+vif(pol.model)
+vif(back.elem.lm)
+
+```
+    
+>In the full model, we appear to fail the assumption of independence of residuals, since there appears to be an obvious pattern and could imply a higher order term. The other assumptions for the full model are met, except the VIF assumption as stated before, since the variables "Comp" and "Pop" have a significantly high VIF score.  In the model that resulted from the backwards elimination, we appear to fail the assumption of independence of residuals since there is also a pattern with curvature.  We also once again, fail the VIF assumption, due to the variables "Comp" and "Pop" having a significantly high VIF score. 
+
+###3.b. 
+Detailed description of assessment of significance tests 
+    
+```{r}
+#Provide R code and output/graphs  
+summary(pol.model)
+summary(back.elem.lm)
+
+```
+    
+>For the full model, we have an F-statistic of 10.72 and a p-value of 1.126e-06, which implies that there is some predicitve power behind the model. However, we can also see that the variables Pop, Precip and Pdays appear not to be significant due to their p-value being greater than our significance level of 0.05. We can see from the full mode that the adjusted R-squared being 0.5931 is quite small.  For the model without Pdays, we have an F-statistic of 13.23 and a p-value of 2.888e-07, which implies that there is some predicitve power behind the model.  We can see that the only variable that is not significant because of a large p-value is Pop. Finally, the adjusted R-squared is 0.6046, which is still small, but it is larger than that of the full model.  That is why this model
+
+###3.c. 
+Detailed description of final model including interpretation of the parameter values in the context of the problem.    
+    
+```{r}
+#Provide R code and output/graphs  
+final.lm <- lm(SO2 ~ Temp + Comp + Pop + Wind + Precip )
+summary(final.lm)
+
+
+```
+    
+>the final model will be $SO2 = 7.349 - 0.061X_Temp + 0.00126X_Comp -0.0007X_Pop  -0.17X_Wind + 0.018X_Precip$ . The intercept coefficient tells us that when all variables are equal to zero, we will have a SO2 level of 7.349, which is not practical in this context because it is an extremely large value for SO2, according to our data.  Also when Comp, Pop, Wind and Prec variables are held constant, the SO2 levels will decrease by 0.061 units, when Temperature decreases by one Farenheit.  When the variables Temp, Pop, Wind and Precip are held constant, the SO2 will increase by 0.00126 when the number of companies with over 20 employees increases by one. These other interpretations are similar for Pop, Wind and Precip variables.  
+
+
+###3.d. 
+General conclusion based on the model - what factors seem to contribute to SO2 output. To what population/situations can we apply our findings?  
+
+>The factors that seem to contribute to SO2 output are Temp, Comp, Pop, Wind and Precip according to our test and final model.  We can apply these findings to the population being the United States, if this dataset of forty one cities was chosen randomly and is representative of the population.  If this is not the case, we would apply these findings mainly for the forty one cities or the states where these cities were selected from. 

@@ -1,0 +1,466 @@
+---
+title: 'Group Research Project'
+output:
+  word_document: default
+  html_document: default
+date: "September 15, 2017"
+---
+
+### Names:Adolfo Huerta
+
+#####What each person contributed to the lab: Worked Independently 
+
+***
+<!-- Use these arrows and dashes to add a text comment that won't appear in the knitted file. This is different than a comment that goes in a code chunk, where you would use # -->
+<!-- The *** creates a small line to separate sections of your document -->
+
+**Please make sure to show all R code and output after each question so that I can see your work.**  Write a sentence for each numerical value produced describing its meaning in context with the proper units.
+
+1.  We wish to build a model to predict the the time (in minutes) to commute to work in Atlanta, GA based on the distance (in miles).  The data for commute time and distance for a random sample of 500 commuters from Atlanta is found in `CommuteAtlanta` in the Lock5Data library.  
+
+    ```{r, message=FALSE, warning=FALSE}
+    #Note- you might need to install these packages first if you don't already have them.
+    library(Lock5Data) 
+    library(mosaic)
+    #what does the attach function do? It lets us easily reference all the variables in the CommuteAtlanta dataset     without having to use the notation CommuteAtlanta$variable_name. Instead, we can just type variable_name. NOTE: if you are working in multiple R file as once, this can be dangerous because you can overwrite variables in other data sets. Use caution!
+    attach(CommuteAtlanta)
+    ```    
+<!-- Why are things tabbed over? Check the knitr output; it indents things appropriately for our outline. -->      
+    a. Provide the relevant summary statistics for the study (mean and sd of variables, scatterplot, correlation). Provide and interpretation of the summary statistics (specifically the scatterplot and correlation).  Based on summary statistics and plots, is there evidence of a linear relationship?
+    
+    ```{r, fig.width=5, fig.height=4}
+    #for a code chunk, you can set how big you want the images to be. default is inches
+    
+    #you might want to start by investigating what variables are in the CommuteAtlanta dataset
+    View(CommuteAtlanta) #uncomment this and run just this line to print the data table
+    names(CommuteAtlanta)
+    summary(CommuteAtlanta)
+    
+    
+    #here is some more code to get you started
+    plot(Distance,Time)
+    mean(Distance)
+    
+    #Provide more R code and output here
+    sd(Distance)
+    sd(Time)
+    mean(Time)
+    cor.test(Distance,Time)
+    
+    
+    
+    
+    ```  
+Here is an example of how you can use LaTeX commands to write equations. $y_{CO} = 3.2 + 3.3*x_{Tar}$.
+Here is an example of inline code. The mean of Distance is `r mean(Distance)`. 
+Based on the summary statistics, we can see that there are five variables in this dataset, namely "City", "Age", "Distance", "Time", "Sex".  We have a sample size of 500 and they all live in the city of Atlanta.  Our age variable ranges from 16 to 85 years old, with an average of 40.24 years old.  Our distance variable has a range from 0 to 101 minutes, with an average of 18.16 minutes and a standard deviation of 13.79.  Our time variable has a range from 1 to 181 minutes, has an average of 29.11 and a standard deviation of 20.72.
+We can see from our scatterplot that there appears to be a positive linear relationship between distance and time and we can say that a linear model is suitable for our data. There appears to be two outliers in our data with over 100 miles in distance and over 150 minutes in time, but these would not be too far off if we drew a best fit linear model and we must investigate further before decidiing to keep or remove.  Finally, our correlation test is further evidence of a strong linear relationship since our correlation is 0.8066198, which is closer to one. 
+
+        
+    b. Fit a linear regression model to predict Commute Time based on Distance in Atlanta. 
+
+        i. Find the regression model using R.  Write out the model in $y=\beta_0+\beta_1*x$ format, plugging in the $\beta$ estimates. Provide a scatterplot with the regression line added to the plot.  
+                
+            ```{r}
+            #Provide R code and output/graphs  
+            model <- lm(Time~Distance)
+            summary(model)
+            plot(Distance, Time)
+            abline(model, col = "red")
+            
+            ```
+
+            >The regression model is $y= 7.12 +1.21*x$ 
+              
+            
+        ii. Interpret the slope in the context of the situation.  
+        
+            >For every additional mile of distance you have between Atlanta and your destination, your time will increase by 1.21 minutes. 
+          
+        
+        iii. Interpret the y-intercept in the context of the situation. Is the interpretation practical in context?  
+        
+            >The time it takes to arrive from Atlanta to your destiantion is 7.12 minutes, when your distance is 0 miles.  This interpretation is not practical since traveling zero miles is not quantifiable and we can say that it takes zero time as well since the person is not moving any distance. 
+           
+    c. Conduct the test to determine if the linear relationship is statistically significant.
+    
+        i. Set up the appropriate null and alternative hypothesis both verbally and symbolically.   
+        
+            >symbolically: $H_0: \beta_1 = 0$ verbally: The slope of the regression line between time and distance is zero ( there is no linear relationship).
+            
+            >symbolically: $H_a: \beta_1 \neq 0$ verbally: The slope of the regression line between time and distance is not zero ( there is a linear relationship).
+             
+        
+        
+        ii. Use R to find the ANOVA table and/or t-test statistics to test the hypothesis test.  
+                            
+            ```{r}
+            #Put Code Here and insert output or graphic into word document
+            anova(model)
+            summary(model)
+           
+            ```    
+            
+        iii. Interpret the meaning of the appropriate p-value in the context of the situation.  
+        
+            >The appropriate p-value in the context of the situation is 2.2e-16 and tells us there is evidence that the slope of the regression line between distance and time is not zero. 
+        
+        
+        iv. State the conclusion of the hypothesis test in the context of the problem.
+        
+            >We reject the null hypothesis, in favor of the alternative hypothesis that the slope of the regression line between distance and time is not zero, since our p-value of 2.2e-16 is less than our significance level of 0.05. 
+            
+           
+        v. Interpret the $R^2$ (coefficient of determination) value in the context of the model variables.   
+        
+            >Our coefficient of determination is 0.6506, which tells us the proportion of variability in the time variable that is explained by the regression with the distance variable. Therefore, 65.06% of the variablity in time it takes to commute from Atlanta to a specific destiantion, is explained by the linear regression with the distance in miles to the destination.  
+  
+        
+    d. We must determine whether the results of the analysis are trustworthy, i.e., the assumptions to perform the Regression Analysis are met by the data. 
+
+        i. Provide and interpret the results of the QQPlot and Shapiro-Wilk Test to determine if the normality of residuals is a satisfied assumption.  
+            
+            ```{r}
+            #Put code and output here
+            shapiro.test(residuals(model))
+            plot(model, 2)
+            ```   
+            
+            >The Shapiro-Wilk Test determines if the data satisfies the normality assumpiton. In this case the p-value < 2.2e-16 so we reject the null that the residuals are normally distributed, in favor of the alternative hypothesis that the residuals are not normally distributed.  We can also see this from the QQ plot, since there is not an approximately straight-line relationship between quantiles of this data and quantiles from the normal distribution.  
+            
+            
+        ii. Provide and interpret the Residual Plot to test Equal Variance of the residuals.  
+            
+            ```{r}
+            #Put code and output here
+            plot(model, 1)
+            ```   
+            >To test equal variance of the residuals we observe how the fitted values vary with the residuals. We want the variablity in time variable to be the same regardless of the values of the distance variable.  In this case, we can see from the residual plot that there is no pattern or fanning/trumpeting to the points about zero, so the constant variance assumption is satisfied.   
+          
+   
+        iii. Interpret the results of the Residual Plot to test the Independence of Residuals assumption.  
+        
+            >To test the independence of the residuals assumption we want the value of the residuals to be independent of the value of x, the distance variable. Since we do not observe any pattern, such as curvature, in the residual plot and the points appear to be randomly distributed about zero then the assumption of independece is satisfied. 
+             
+            
+            
+        iv. Provide and interpret the Cook's Distance plot to test if there are outliers in the data.  
+        
+            ```{r}
+            #Put code and output here
+            plot(model, 5)
+            ```  
+            
+            >The cooks distance is a measure of each point's importance in determining the regression result.  According to the Cook's Distance plot for our data, we can see that there are a few values of concern, since they are between the distance of 0.5 and 1.  However, there are no values with distances larger than one which would indicate that they have a high influence on the estimate of the slope of the analysis.  
+ 
+          
+        v. After assessing all assumptions, do you have any concerns about the analysis?   
+
+            >After assesing all assumptions, I do have concerns about the analysis because according to our Shapiro-Wilk Test, our data does not appear to be normally distributed and fails that assumption.  Another concern is that we have values in our data that could be considered outliers according to our Cook's Distance plot, we would have to investigate these points further to see how much they affect our regression result.  
+ 
+      
+          
+2.  We are going to try and predict a student's GPA in College based on their SAT score.  The data is found in  `StudentSurvey` in the Lock5Data library.  First we are going to look at a model that examines `GPA` and `VerbalSAT`
+
+    ```{r message=FALSE}
+    data(StudentSurvey)
+    attach(StudentSurvey)
+    
+    names(StudentSurvey)
+    ```    
+     
+      
+    a. Provide the relevant summary statistics for the study (mean and sd of variables, scatterplot, correlation). Provide and interpretation of the summary statistics (specifically the scatterplot and correlation).  Is there evidence of a linear relationship? (due to missing data, you may need to include na.rm=T for mean() and sd() and input "pairwise.complete.obs" as an argument in cor()).  
+    
+        ```{r}
+        #Provide R code and output/graphs  
+        summary(StudentSurvey, na.rm = T)
+        sd(VerbalSAT, na.rm = T)
+        sd(MathSAT, na.rm = T)
+        sd(GPA, na.rm = T)
+        sd(SAT, na.rm = T)
+        View(StudentSurvey) 
+        names(StudentSurvey)
+        plot(VerbalSAT, GPA)
+        cor.test(VerbalSAT, GPA, use="pairwise.complete.obs")
+        
+
+        ```  
+      
+        >According to our stated problem, our relevant summary statistics are that we have 205 and students with Math being their higher SAT score and 150 students with Verbal being their higher SAT score.  The Verbal SAT score ranges from a score of 390 to 800, with a mean of 594.2 and a standard deviation of 74.176. The Math SAT ranges from a score of 400 to 800, with a mean of 609.4 and a standard deviation of 68.49. The combined regular SAT scores range from 800 to 1550 points, with a mean score of 1204 and a standard deviation of 121.285.  The GPA ranges from a 2.00 to a 4.00, with a mean of 3.158 and a standard deviation of 0.398.  From our scatterplot we can see that there appears to evidence of a positive linear relationship between the Verbal SAT scores and the GPA.  Finally, from our correlation test, we can see that although it is not a high correlation close to 1, the correlation of 0.353 tells us there is a small positive linear relationship between Verbal SAT scores and GPA in college. 
+        
+      
+    b. Fit a linear regression model to predict College GPA based on Verbal SAT scores. 
+
+        i. Find the regression model.  Write out the model in $y=\beta_0+\beta_1*x$ format. Provide a scatterplot with the regression line added to the plot.  
+                
+            ```{r}
+            #Provide R code and output/graphs  
+            model2 <- lm(GPA~VerbalSAT)
+            summary(model2)
+            plot(VerbalSAT, GPA)
+            abline(model2, col = "red")
+
+            ```
+            
+            >  The regression model is $y= 2.033 + 0.00189*x$
+
+            
+        ii. Interpret the slope in the context of the situation.  
+        
+            >For every additional point in your Verbal SAT score, your GPA in college will increase by 0.00189. 
+        
+        
+        iii. Interpret the y-intercept in the context of the situation. Is its interpretation practical in context?  
+        
+            > A students GPA in college will be 2.033, when the student received a score of zero in the Verbal SAT test. This interpretation is not practical in the context of the problem because it would be almost impossible or rare for a student to receive a zero in the Verbal SAT.  The student would have to not take the test or not try at all to get this low score. 
+
+            
+    c. Now we will conduct the test to determine if the linear relationship is statistically significant.
+    
+        i. Set up the appropriate null and alternative hypothesis verbally and symbolically.   
+        
+            >Null Hypothesis: The slope of the regression line between the student's college GPA and their score in the Verbal SAT is zero. 
+            Alternative Hypothesis: The slope of the regression line between the student's college GPA and their score in the Verbal SAT is not zero.
+
+        
+        
+        ii. Use R to find the ANOVA table and/or t-test statistics to test the hypothesis test.  
+                            
+            ```{r}
+            #Put Code Here and insert output or graphic into word document
+            anova(model2)
+            ```    
+            
+        iii. Interpret the meaning of the p-value in the context of the situation.  
+        
+            >The p-value in the context of the situation is 1.454e-11, which is really small and tells us there is evidence that the slope of regression line is not zero. 
+        
+        
+        iv. State the conclusion of the hypothesis test in the context of the problem.
+        
+            >We will reject the null hypothesis, in favor of the alternative hypothesis that the slope of the regression line between the student's college GPA and their score in the Verbal SAT is not zero with a p-vlue of 1.454e-11. 
+
+           
+        v. Interpret the $R^2$ value in the context of the model variables.   
+        
+            >The coefficient of determination tells us that 12.46% of the variablity in college GPA, is explained by the linear regression with the score received in the Verbal SAT test. 
+
+        
+        vi. Given the $R^2$ value, is the relationship observed practically significant?  What might explain apparent "disagreement" between the practical and statistical significance of the linear relationship?  
+        
+            >Given our coefficient of determination, the relationship observed is not practically significant, since only a small portion of the variability of the college GPA is explained by the regression line with the Verbal SAT scores.  This disagreement with the statistical significance might be explained by the collinearity with the SAT variable. 
+ 
+        
+    d. We have to determine whether the results of the analysis are trustworthy, i.e., the assumptions to perform the Regression Analysis are met by the data. 
+
+        i. Provide and interpret the results of the QQPlot and Shapiro-Wilk Test to determine if the normality of residuals is a satisfied assumption.  
+            
+            ```{r}
+            #Provide R code and output/graphs 
+            shapiro.test(residuals(model2))
+            plot(model2, 2)
+            
+            ```   
+            
+            >According to the results of the QQPlot and the Shapiro-Wilk test, we conclude that the assumption of normality of residuals is satisfied. The QQ plot looks good and in the middle but is not approximately a straight line relationship between quantiles of our data and quantiles from the normal distribution.  In the shapiro-wilk test we can see the p-value is 0.00493, which is still smaller than 0.05, therefore we reject the null hypothesis that the residuals are normally distributed. 
+ 
+            
+        ii. Provide and interpret the Residual Plot to test Equal Variance of the residuals.  
+            
+            ```{r}
+            #Provide R code and output/graphs  
+            plot(model2, 1)
+            ```   
+            >According to our residuals plot, we can se that there is equal variance of the residuals since there is no obvious pattern of trumpeting to the points about zero, they appear to be equally distributed about zero. 
+              
+   
+        iii. Interpret the results of the Residual Plot to test the Independence of Residuals assumption.  
+        
+            >According to the result of our residual plot, we can see that there is no obvious pattern, such as curvature, in the residuals versus the fitted values. Since the points are randomly distributed about zero we conclude that the assumpiton of independece of residuals in satisfied. 
+
+            
+            
+        iv. Provide and interpret the Cook's Distance plot to test if there are outliers in the data.  
+        
+            ```{r}
+            #Provide R code and output/graphs  
+            plot(model2, 5)
+            ```  
+            
+            >We can clearly see from our Cook's Distance plot that there are no outliers.  The data points are all clustered together and the cook's distance contour lines are not even visible in the graph.  This tells us that there are no points with a distance bigger or equal to 0.5.  Since we have small distances from the central cluseter of observations it means that removing these observations has little effect on the regression result. 
+            
+          
+        v. After assessing all assumptions, do you have an concerns about the analysis?   
+
+            >After assessing all assumptions, the main concern that we have is that the data might not be normally distributed, although it does appear close to it from the QQ plot.  The p-value of 0.00493 given to us by the Shapiro-wilk test, tells us that we can reject the null hypothesis that states that the residuals are normally distributed. 
+  
+
+    e. Let's use the model to make predictions about performance in college.  
+    
+        i. Predict an individuals College GPA given a Verbal SAT score of 600 with a 95% prediction interval. Interpret your interval in the context of the problem.
+        
+            ```{r}
+            #Put your code and output here  
+            predict(model2, interval = "predict",newdata = data.frame(VerbalSAT = 600))
+
+            ```
+            >We are 95% confident that the College GPA for a Verbal SAT score of 600 is between 2.434 and 3.904.
+  
+            
+        ii. Predict the average College GPA for students with a Verbal SAT score of 550 with a 95% confidence interval. Interpret your interval in the context of the problem.  
+        
+            ```{r}
+            #Put your code and output here 
+            predict(model2, interval = "confidence",newdata = data.frame(VerbalSAT = 600))
+
+            ```
+            >We are 95% confident that the true mean College GPA for a Verbal SAT score of 550 is between 3.129 and 3.208. 
+ 
+            
+        iii. Notice the width of the intervals for i. and ii.  Why is the prediction interval so much wider than the confidence interval?   
+        
+            >The prediction interval is so much wider because since we are predicting an individual response and not a mean response, our interval must be larger to account for the error due to extrapolation.  As we move further away from the range of x, VerbalSAT, we must account for an increase in the error of prediction due to extrapolation. 
+ 
+
+
+3.  Now we are going to look at a model that examines `GPA` and `MathSAT` instead of verbal SAT.
+      
+    a. Provide the relevant summary statistics for the study (mean and sd of variables, scatterplot, correlation). Provide and interpretation of the summary statistics (specifically the scatterplot and correlation).  Is there evidence of a linear relationship? (you may need to include na.rm=T again for mean() and sd() and input "pairwise.complete.obs" as an argument in cor()).  
+    
+        ```{r}
+        #Provide R code and output/graphs  
+        plot(MathSAT, GPA)
+        mean(MathSAT, na.rm = T)
+        sd(MathSAT, na.rm = T)
+        mean(GPA, na.rm = T)
+        sd(GPA, na.rm = T)
+        cor.test(MathSAT, GPA, use="pairwise.complete.obs")
+
+        ```  
+      
+        >The Math SAT has a mean of 609.4 and a standard deviation of 68.49. The GPA has a mean of 3.158 and a standard deviation of 0.398.  From our scatterplot we can see that there does not appear to be evidence of a linear relationship between the Math SAT scores and the GPA. From our correlation test we can see that with a correlation of 0.282267, there does not appear to be a strong linear relationship between Math SAT scores and a students college GPA. 
+
+        
+      
+    b. Fit a linear regression model to predict College GPA based on Math SAT scores. 
+
+        i. Find the regression model.  Write out the model in $y=\beta_0+\beta_1*x$ format. Provide a scatterplot with the regression line added to the plot.  
+                
+            ```{r}
+            #Provide R code and output/graphs 
+            model3 <- lm(GPA~MathSAT)
+            summary(model)
+            plot(MathSAT, GPA)
+            abline(model3, col = "red")
+
+            ```
+            
+            >The model is $y= 2.147 + 0.00165*x$
+ 
+            
+        ii. Interpret the slope in the context of the situation.  
+        
+            >  For every additional point in your Math SAT score, your GPA in college will increase by 0.00165.
+        
+        
+        iii. Interpret the y-intercept in the context of the situation. Is its interpretation practical in context?  
+        
+            > A students GPA in college will be 2.147, when the student received a score of zero in the Math SAT test. This interpretation is not practical in the context of the problem because it would be really rare for a student to receive a zero in the Math SAT test. 
+
+
+            
+    c. Now we will conduct the test to determine if the linear relationship is statistically significant.
+    
+        i. Set up the appropriate null and alternative hypothesis verbally and symbolically.   
+        
+            >Null Hypothesis: The slope of the regression line between the student's college GPA and their score in the Math SAT is zero. 
+            Alternative Hypothesis: The slope of the regression line between the student's college GPA and their score in the Math SAT is not zero.
+
+        
+        
+        ii. Use R to find the ANOVA table and/or t-test statistics to test the hypothesis test.  
+                            
+            ```{r}
+            #Put Code Here and insert output or graphic into word document
+            anova(model3)
+            summary(model3)
+ 
+            ```    
+            
+        iii. Interpret the meaning of the p-value in the context of the situation.  
+        
+            > the p-value in the context of the situation is 9.677e-08 and it tells us there is enough evidence to say that the slope of the regression line between the student's college GPA and their score in the Math SAT is not zero.
+
+        
+        
+        iv. State the conclusion of the hypothesis test in the context of the problem.
+        
+            >We reject the null hypothesis, in favor of the alternative hypothesis that he slope of the regression line between the student's college GPA and their score in the Math SAT is not zero, with a p-value of 9.677e-08.
+
+           
+        v. Interpret the $R^2$ value in the context of the model variables.   
+        
+            >Insert Answer Here  
+  
+        
+        vi. Given the $R^2$ value, is the relationship observed practically significant?  What might explain apparent "disagreement" between the practical and statistical significance of the linear relationship?  
+        
+            >
+
+        
+    d. We have to determine whether the results of the analysis are trustworthy, i.e., the assumptions to perform the Regression Analysis are met by the data. 
+
+        i. Provide and interpret the results of the QQPlot and Shapiro-Wilk Test to determine if the nomality of residuals is a satisfied assumption.  
+            
+            ```{r}
+            #Provide R code and output/graphs 
+            shapiro.test(residuals(model3))
+            plot(model3, 2)
+          
+            ```   
+            
+            >Insert Answer Here     
+  
+            
+        ii. Provide and interpret the Residual Plot to test Equal Variance of the residuals.  
+            
+            ```{r}
+            #Provide R code and output/graphs  
+            plot(model3, 1)
+            ```   
+            >Insert Answer Here   
+              
+   
+        iii. Interpret the results of the Residual Plot to test the Independence of Residuals assumption.  
+        
+            >Insert Answer Here   
+  
+            
+            
+        iv. Provide and interpret the Cook's Distance plot to test if there are outliers in the data.  
+        
+            ```{r}
+            #Provide R code and output/graphs
+            plot(model3, 5)
+            ```  
+            
+            >Insert Answer Here  
+         
+          
+        v. After assessing all assumptions, do you have an concerns about the analysis?   
+
+            >Insert Answer Here  
+    
+
+    e. Compare the new model predicting college GPA with Math SAT Scores to the model predicting GPA with Verbal SAT Scores.  Which model would be the best (relative to each other) model to predict college GPA?  Justify your answer with the statistical analysis.  
+    
+        >Insert Answer Here  
+ 
+        
+    f. In both models there is a lot of unexplained variability in College GPA.  What might explain that leftover variability?  
+    
+        >Insert Answer Here  
+
+    
+       
