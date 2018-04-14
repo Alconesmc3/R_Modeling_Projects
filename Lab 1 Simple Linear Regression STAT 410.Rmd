@@ -8,7 +8,6 @@ date: "September 15, 2017"
 
 ### Names:Adolfo Huerta
 
-#####What each person contributed to the lab: Worked Independently 
 
 ***
 <!-- Use these arrows and dashes to add a text comment that won't appear in the knitted file. This is different than a comment that goes in a code chunk, where you would use # -->
@@ -16,32 +15,29 @@ date: "September 15, 2017"
 
 **Please make sure to show all R code and output after each question so that I can see your work.**  Write a sentence for each numerical value produced describing its meaning in context with the proper units.
 
-1.  We wish to build a model to predict the the time (in minutes) to commute to work in Atlanta, GA based on the distance (in miles).  The data for commute time and distance for a random sample of 500 commuters from Atlanta is found in `CommuteAtlanta` in the Lock5Data library.  
+1.  The data for commute time and distance for a random sample of 500 commuters from Atlanta is found in `CommuteAtlanta` in the Lock5Data library.  
 
     ```{r, message=FALSE, warning=FALSE}
     #Note- you might need to install these packages first if you don't already have them.
     library(Lock5Data) 
     library(mosaic)
-    #what does the attach function do? It lets us easily reference all the variables in the CommuteAtlanta dataset     without having to use the notation CommuteAtlanta$variable_name. Instead, we can just type variable_name. NOTE: if you are working in multiple R file as once, this can be dangerous because you can overwrite variables in other data sets. Use caution!
     attach(CommuteAtlanta)
-    ```    
-<!-- Why are things tabbed over? Check the knitr output; it indents things appropriately for our outline. -->      
-    a. Provide the relevant summary statistics for the study (mean and sd of variables, scatterplot, correlation). Provide and interpretation of the summary statistics (specifically the scatterplot and correlation).  Based on summary statistics and plots, is there evidence of a linear relationship?
+    ```       
     
     ```{r, fig.width=5, fig.height=4}
     #for a code chunk, you can set how big you want the images to be. default is inches
     
-    #you might want to start by investigating what variables are in the CommuteAtlanta dataset
+    #We start by investigating what variables are in the CommuteAtlanta dataset
     View(CommuteAtlanta) #uncomment this and run just this line to print the data table
     names(CommuteAtlanta)
     summary(CommuteAtlanta)
     
     
-    #here is some more code to get you started
+    #find the relationship between distance and time and the mean distance traveled. 
     plot(Distance,Time)
     mean(Distance)
     
-    #Provide more R code and output here
+    #Check for the correlation between distance and time. 
     sd(Distance)
     sd(Time)
     mean(Time)
@@ -51,15 +47,11 @@ date: "September 15, 2017"
     
     
     ```  
-Here is an example of how you can use LaTeX commands to write equations. $y_{CO} = 3.2 + 3.3*x_{Tar}$.
-Here is an example of inline code. The mean of Distance is `r mean(Distance)`. 
 Based on the summary statistics, we can see that there are five variables in this dataset, namely "City", "Age", "Distance", "Time", "Sex".  We have a sample size of 500 and they all live in the city of Atlanta.  Our age variable ranges from 16 to 85 years old, with an average of 40.24 years old.  Our distance variable has a range from 0 to 101 minutes, with an average of 18.16 minutes and a standard deviation of 13.79.  Our time variable has a range from 1 to 181 minutes, has an average of 29.11 and a standard deviation of 20.72.
 We can see from our scatterplot that there appears to be a positive linear relationship between distance and time and we can say that a linear model is suitable for our data. There appears to be two outliers in our data with over 100 miles in distance and over 150 minutes in time, but these would not be too far off if we drew a best fit linear model and we must investigate further before decidiing to keep or remove.  Finally, our correlation test is further evidence of a strong linear relationship since our correlation is 0.8066198, which is closer to one. 
 
-        
-    b. Fit a linear regression model to predict Commute Time based on Distance in Atlanta. 
-
-        i. Find the regression model using R.  Write out the model in $y=\beta_0+\beta_1*x$ format, plugging in the $\beta$ estimates. Provide a scatterplot with the regression line added to the plot.  
+        #Need to fit a linear regression model to predict the commute time based on the distance from Atlanta. 
+        #Write model with the Beta estimates and create a scatterpolot with a regression line added to the plot. 
                 
             ```{r}
             #Provide R code and output/graphs  
@@ -72,17 +64,16 @@ We can see from our scatterplot that there appears to be a positive linear relat
 
             >The regression model is $y= 7.12 +1.21*x$ 
               
-            
-        ii. Interpret the slope in the context of the situation.  
+             
         
             >For every additional mile of distance you have between Atlanta and your destination, your time will increase by 1.21 minutes. 
-          
-        
-        iii. Interpret the y-intercept in the context of the situation. Is the interpretation practical in context?  
+            
         
             >The time it takes to arrive from Atlanta to your destiantion is 7.12 minutes, when your distance is 0 miles.  This interpretation is not practical since traveling zero miles is not quantifiable and we can say that it takes zero time as well since the person is not moving any distance. 
            
-    c. Conduct the test to determine if the linear relationship is statistically significant.
+    ###Conduct the test to determine if the linear relationship is statistically significant.
+    
+    ###KEEP EDITING FROM HERE###
     
         i. Set up the appropriate null and alternative hypothesis both verbally and symbolically.   
         
