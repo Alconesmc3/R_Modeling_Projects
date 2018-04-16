@@ -73,9 +73,9 @@ We can see from our scatterplot that there appears to be a positive linear relat
            
     ###Conduct the test to determine if the linear relationship is statistically significant.
     
-    ###KEEP EDITING FROM HERE###
     
-        i. Set up the appropriate null and alternative hypothesis both verbally and symbolically.   
+    
+        ### Set up the appropriate null and alternative hypothesis both verbally and symbolically.   
         
             >symbolically: $H_0: \beta_1 = 0$ verbally: The slope of the regression line between time and distance is zero ( there is no linear relationship).
             
@@ -83,7 +83,7 @@ We can see from our scatterplot that there appears to be a positive linear relat
              
         
         
-        ii. Use R to find the ANOVA table and/or t-test statistics to test the hypothesis test.  
+        ### Use R to find the ANOVA table and/or t-test statistics to test the hypothesis test.  
                             
             ```{r}
             #Put Code Here and insert output or graphic into word document
@@ -107,7 +107,7 @@ We can see from our scatterplot that there appears to be a positive linear relat
             >Our coefficient of determination is 0.6506, which tells us the proportion of variability in the time variable that is explained by the regression with the distance variable. Therefore, 65.06% of the variablity in time it takes to commute from Atlanta to a specific destiantion, is explained by the linear regression with the distance in miles to the destination.  
   
         
-    d. We must determine whether the results of the analysis are trustworthy, i.e., the assumptions to perform the Regression Analysis are met by the data. 
+    d. We must determine whether the results of the analysis are trustworthy. That the assumptions to perform the Regression Analysis are met by the data. 
 
         i. Provide and interpret the results of the QQPlot and Shapiro-Wilk Test to determine if the normality of residuals is a satisfied assumption.  
             
@@ -120,22 +120,22 @@ We can see from our scatterplot that there appears to be a positive linear relat
             >The Shapiro-Wilk Test determines if the data satisfies the normality assumpiton. In this case the p-value < 2.2e-16 so we reject the null that the residuals are normally distributed, in favor of the alternative hypothesis that the residuals are not normally distributed.  We can also see this from the QQ plot, since there is not an approximately straight-line relationship between quantiles of this data and quantiles from the normal distribution.  
             
             
-        ii. Provide and interpret the Residual Plot to test Equal Variance of the residuals.  
+        ###Provide and interpret the Residual Plot to test Equal Variance of the residuals.  
             
             ```{r}
-            #Put code and output here
+            
             plot(model, 1)
             ```   
             >To test equal variance of the residuals we observe how the fitted values vary with the residuals. We want the variablity in time variable to be the same regardless of the values of the distance variable.  In this case, we can see from the residual plot that there is no pattern or fanning/trumpeting to the points about zero, so the constant variance assumption is satisfied.   
           
    
-        iii. Interpret the results of the Residual Plot to test the Independence of Residuals assumption.  
+        ###Interpret the results of the Residual Plot to test the Independence of Residuals assumption.  
         
             >To test the independence of the residuals assumption we want the value of the residuals to be independent of the value of x, the distance variable. Since we do not observe any pattern, such as curvature, in the residual plot and the points appear to be randomly distributed about zero then the assumption of independece is satisfied. 
              
             
             
-        iv. Provide and interpret the Cook's Distance plot to test if there are outliers in the data.  
+        ###Provide and interpret the Cook's Distance plot to test if there are outliers in the data.  
         
             ```{r}
             #Put code and output here
@@ -145,13 +145,11 @@ We can see from our scatterplot that there appears to be a positive linear relat
             >The cooks distance is a measure of each point's importance in determining the regression result.  According to the Cook's Distance plot for our data, we can see that there are a few values of concern, since they are between the distance of 0.5 and 1.  However, there are no values with distances larger than one which would indicate that they have a high influence on the estimate of the slope of the analysis.  
  
           
-        v. After assessing all assumptions, do you have any concerns about the analysis?   
-
-            >After assesing all assumptions, I do have concerns about the analysis because according to our Shapiro-Wilk Test, our data does not appear to be normally distributed and fails that assumption.  Another concern is that we have values in our data that could be considered outliers according to our Cook's Distance plot, we would have to investigate these points further to see how much they affect our regression result.  
+          >After assesing all assumptions, I do have concerns about the analysis because according to our Shapiro-Wilk Test, our data does not appear to be normally distributed and fails that assumption.  Another concern is that we have values in our data that could be considered outliers according to our Cook's Distance plot, we would have to investigate these points further to see how much they affect our regression result.  
  
       
           
-2.  We are going to try and predict a student's GPA in College based on their SAT score.  The data is found in  `StudentSurvey` in the Lock5Data library.  First we are going to look at a model that examines `GPA` and `VerbalSAT`
+2.  We are going to try and predict a student's GPA in College based on their SAT score.  The data is found in  `StudentSurvey` in the Lock5Data library.  
 
     ```{r message=FALSE}
     data(StudentSurvey)
@@ -161,7 +159,7 @@ We can see from our scatterplot that there appears to be a positive linear relat
     ```    
      
       
-    a. Provide the relevant summary statistics for the study (mean and sd of variables, scatterplot, correlation). Provide and interpretation of the summary statistics (specifically the scatterplot and correlation).  Is there evidence of a linear relationship? (due to missing data, you may need to include na.rm=T for mean() and sd() and input "pairwise.complete.obs" as an argument in cor()).  
+    ###Provide the relevant summary statistics for the study (mean and sd of variables, scatterplot, correlation). Provide an interpretation of the summary statistics (specifically the scatterplot and correlation).  
     
         ```{r}
         #Provide R code and output/graphs  
@@ -181,9 +179,9 @@ We can see from our scatterplot that there appears to be a positive linear relat
         >According to our stated problem, our relevant summary statistics are that we have 205 and students with Math being their higher SAT score and 150 students with Verbal being their higher SAT score.  The Verbal SAT score ranges from a score of 390 to 800, with a mean of 594.2 and a standard deviation of 74.176. The Math SAT ranges from a score of 400 to 800, with a mean of 609.4 and a standard deviation of 68.49. The combined regular SAT scores range from 800 to 1550 points, with a mean score of 1204 and a standard deviation of 121.285.  The GPA ranges from a 2.00 to a 4.00, with a mean of 3.158 and a standard deviation of 0.398.  From our scatterplot we can see that there appears to evidence of a positive linear relationship between the Verbal SAT scores and the GPA.  Finally, from our correlation test, we can see that although it is not a high correlation close to 1, the correlation of 0.353 tells us there is a small positive linear relationship between Verbal SAT scores and GPA in college. 
         
       
-    b. Fit a linear regression model to predict College GPA based on Verbal SAT scores. 
+    ### Fit a linear regression model to predict College GPA based on Verbal SAT scores. 
 
-        i. Find the regression model.  Write out the model in $y=\beta_0+\beta_1*x$ format. Provide a scatterplot with the regression line added to the plot.  
+       ###Find the regression model.  Write out the model in $y=\beta_0+\beta_1*x$ format. Provide a scatterplot with the regression line added to the plot.  
                 
             ```{r}
             #Provide R code and output/graphs  
@@ -207,9 +205,8 @@ We can see from our scatterplot that there appears to be a positive linear relat
             > A students GPA in college will be 2.033, when the student received a score of zero in the Verbal SAT test. This interpretation is not practical in the context of the problem because it would be almost impossible or rare for a student to receive a zero in the Verbal SAT.  The student would have to not take the test or not try at all to get this low score. 
 
             
-    c. Now we will conduct the test to determine if the linear relationship is statistically significant.
-    
-        i. Set up the appropriate null and alternative hypothesis verbally and symbolically.   
+    c. Now we conduct the test to determine if the linear relationship is statistically significant.
+      
         
             >Null Hypothesis: The slope of the regression line between the student's college GPA and their score in the Verbal SAT is zero. 
             Alternative Hypothesis: The slope of the regression line between the student's college GPA and their score in the Verbal SAT is not zero.
@@ -238,8 +235,7 @@ We can see from our scatterplot that there appears to be a positive linear relat
             >The coefficient of determination tells us that 12.46% of the variablity in college GPA, is explained by the linear regression with the score received in the Verbal SAT test. 
 
         
-        vi. Given the $R^2$ value, is the relationship observed practically significant?  What might explain apparent "disagreement" between the practical and statistical significance of the linear relationship?  
-        
+        vi. Given the $R^2$ value.
             >Given our coefficient of determination, the relationship observed is not practically significant, since only a small portion of the variability of the college GPA is explained by the regression line with the Verbal SAT scores.  This disagreement with the statistical significance might be explained by the collinearity with the SAT variable. 
  
         
@@ -317,7 +313,7 @@ We can see from our scatterplot that there appears to be a positive linear relat
 
 3.  Now we are going to look at a model that examines `GPA` and `MathSAT` instead of verbal SAT.
       
-    a. Provide the relevant summary statistics for the study (mean and sd of variables, scatterplot, correlation). Provide and interpretation of the summary statistics (specifically the scatterplot and correlation).  Is there evidence of a linear relationship? (you may need to include na.rm=T again for mean() and sd() and input "pairwise.complete.obs" as an argument in cor()).  
+    a. Provide the relevant summary statistics for the study (mean and sd of variables, scatterplot, correlation). Provide and interpretation of the summary statistics (specifically the scatterplot and correlation).  
     
         ```{r}
         #Provide R code and output/graphs  
@@ -411,7 +407,7 @@ We can see from our scatterplot that there appears to be a positive linear relat
           
             ```   
             
-            >Insert Answer Here     
+            >    
   
             
         ii. Provide and interpret the Residual Plot to test Equal Variance of the residuals.  
@@ -425,7 +421,7 @@ We can see from our scatterplot that there appears to be a positive linear relat
    
         iii. Interpret the results of the Residual Plot to test the Independence of Residuals assumption.  
         
-            >Insert Answer Here   
+            >
   
             
             
@@ -436,22 +432,22 @@ We can see from our scatterplot that there appears to be a positive linear relat
             plot(model3, 5)
             ```  
             
-            >Insert Answer Here  
+            >
          
           
         v. After assessing all assumptions, do you have an concerns about the analysis?   
 
-            >Insert Answer Here  
+            > 
     
 
-    e. Compare the new model predicting college GPA with Math SAT Scores to the model predicting GPA with Verbal SAT Scores.  Which model would be the best (relative to each other) model to predict college GPA?  Justify your answer with the statistical analysis.  
+    e. Compare the new model predicting college GPA with Math SAT Scores to the model predicting GPA with Verbal SAT Scores.  
     
-        >Insert Answer Here  
+        > 
  
         
     f. In both models there is a lot of unexplained variability in College GPA.  What might explain that leftover variability?  
     
-        >Insert Answer Here  
+        >
 
     
        
