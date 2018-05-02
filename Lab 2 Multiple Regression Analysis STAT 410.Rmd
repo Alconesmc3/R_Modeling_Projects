@@ -8,38 +8,29 @@ date: "Sepetember 25, 2017"
 
 ### Names: Daniel Meza, Adolfo Huerta
 
-#####What each person contributed to the lab:Daniel Meza did problem one and Adolfo 
-##### Huerta problem two. We then checked each others worked and discussed about it. 
-**Please make sure to show all R code and output after each question so that I can see your work.**  Write a sentence for each numerical value produced describing its meaning in context with the proper units.
-
-***
 
 ##Problem 1
 A medical study was conducted to study the relationship between systolic blood pressure and the explanatory variables, weight (kg) and age (days) for infants.  The data for 25 infants is provided in infants.csv.  The researchers decide to consider the general linear model: $\hat{y}_{BP}=\hat{\beta}_0+\hat{\beta}_1x_{age}+\hat{\beta}_2x_{wt}$   
 
 
 ###1.a. 
-State the statistical analysis research question for your Regression Analysis.
          
 >The researchers are interested in seeing if the variables age and weight can predict the systolic blood pressure well.
 
-###1.b.
-Name the response variable of interest below and state the type (quantitative, qualitative).  
+###1.b. 
 
 >The response variable is systolic blood pressure and it is quantitative. 
 
-###1.c. 
-Name the explanatory variables of interest below and state the types (quantitative, qualitative).  
+###1.c.  
     
 >Weight and age are both explanatory quantitative variables.
         
 ###1.d.
-Describe the data collection technique: is it experimental or observational?  
     
 >This is an observational study since they cannot control the childrens weight.Also, they did not specify whether they tracked the children or not.
 
 ###1.e.
-Exploratory data analysis: provide the summary statistics (mean and standard deviation) for each explanatory variable and the response.  In addition, provide a scatterplot of each explanatory variable versus the response.  Graphs should have proper x and y axis labels.  Discuss the observed relationships and possible implications on the structure of the regression model (first order model or higher order models).  
+### Exploratory Data Analysis: We will provide summary statistics and a scatterplot of each explanatory variable versus the response. 
         
 ```{r}
 #Provide R code and output/graphs 
@@ -66,7 +57,7 @@ sd(x3)
 >The mean age in the infants data set is 4.56 and the standard deviation is 1.157 for age.The mean weight of the infants was 3.4558 kg with a standard deviation of .04784.The mean blood pressure for the infants was 95.2 and the standard deviation was 8.301. We can observe a good relationship between wieght and blood pressure. There is also a sign of a possitve correlation with age and blood pressure. If age and weight are not too correlated then there could be a possibility for a high order linear model. 
  
 ###1.f.
-Determine the coefficients for each variable in the model and provide an interpretation of each parameter estimate in the context of the problem.  
+###We will determine the coefficients for each variable in the model and provide an interpretation of each parameter estimate in the context of the problem.  
 
 
 ```{r}
@@ -85,8 +76,8 @@ coef(bl.model)
             
 >The blood pressure when the age is zero and the wieght is zero is 57.264. Holding the weight constant, a one year increase in age will increase the blood pressure by 5.804.Holding the age constant, a one kg increase in weight will increase the blood pressure by 3.316.     
  
-###1.g.
-Test for possible correlations between the explanatory variables and assess the possible impact of collinearity.  Provide measures of correlation, scatterplots and VIF assessment.    
+###1.g. 
+We test for correlations between explanatory variables and check for collinearity. We provide measures of correlation, scatterplots and VIF statements. 
 
 ```{r}
 #Provide R code and output/graphs  
@@ -105,10 +96,9 @@ plot(x1,x2)
  
 
 ###1.h.
-Conduct appropriate testing for the assumptions of Regression Analysis.  
 
 ####1.h.i.	
-Did the observations pass the equal variance assumption?  
+##Cehck for equal variance assumption. 
     
 ```{r}
 #Provide R code and output/graphs  
@@ -117,10 +107,8 @@ plot(bl.model,1)
 ```
             
 >There exists constant variance since the residuals are spread out evenly througout the plot. 
-            
-
-####1.h.ii.	
-Did the observations pass the independence assumption?   
+    
+####1.h.ii.	  
                   
 ```{r}
 #Provide R code and output/graphs  
@@ -132,15 +120,14 @@ plot(bl.model,1)
             
 
 ####1.h.iii. 
-Did the observations pass the normality assumption?    
                   
 ```{r}
 plot(bl.model,2)
 
 #Provide R code and output/graphs  
 ```  
-            
->Yes, the normaility assumption is satisfied since there are only a couple data points that begin to trail of the normal line.  
+            f
+>Yes, the normaility assumption is satisfied since there are only a couple data points that begin to trail off the normal line.  
             
 
 ####1.h.iv.	
@@ -152,14 +139,14 @@ plot(bl.model,5)
 
 ```  
 
->No, this assumption can't be satisified since there is a outlier of concern.
+>No, this assumption can't be satisified since there is an outlier of concern.
             
 
-###1.i. 
-Now we will conduct the test to determine if the linear relationship is statistically significant by testing the *general* hypothesis for the full model.  
+###1.i.   
+Test to determine if the linear relationship is statistically significant by testing the general hypothesis for the full model.  
     
 ####1.i.i. 
-State the *general* hypothesis for the full model (null and alternative) for Multiple Regression Analysis mathematically and in a complete sentence.  
+We will state the general hypothesis for the full model  for Multiple Regression Analysis mathematically.  
             
 $H_0: \beta_1=\beta_2=0$  
 
@@ -196,7 +183,7 @@ State the conclusion of the hypothesis test in the context of the problem.
 Now we will conduct the test to determine if each variables is statistically significant by testing the *specific* hypotheses for each variable.  
     
 ####1.j.i. 
-State the *specific* hypotheses for each variable in the model (null and alternative) for Multiple Regression Analysis mathematically and in a complete sentence.   
+State the *specific* hypotheses for each variable in the model (null and alternative) for Multiple Regression Analysis mathematically.
             
 $H_0: \beta_1=0$  
 
@@ -249,8 +236,7 @@ Interpret the correct $R^2$ value in the context of the model variables. Assess 
 >About 91 percent of the variability in blood pressure is explained by the linear relationship with weight and age.      
         
   
-###1.l. 
-Do you have any concerns or issues with the formulation of the model and the included variables?  Explain.  
+###1.l.  
    
 >Most of the assumptions passed except the assumption on outliers. I have a small concern about why the variables weight and age are strongly correlated but, when we checked the VIF the value was small. 
 
@@ -266,22 +252,21 @@ State the statistical analysis research question for your Regression Analysis.
 >The statistical analysis research question is wether the various dietary additives in combination with either high level of copper or low level of copper have predictive power for the rate at which chickens gain weight, which is measured as the feed efficiency ratio. 
 
 ###2.b. 
-Name the response variable of interest below and state the type (quantitative, qualitative).  
+Name the response variable of interest below.  
 
 >The response variable of interest is the feed efficiency ratio, which is measured as feed consumed (g) to weight gain (g). This is a quantiative type of variable since it is grams over grams. 
 
 ###2.c.  
-Name the explanatory variables of interest below and state the types (quantitative, qualitative).  
+Name the explanatory variables of interest below.  
     
 >The explanatory variables of interest are the amount of additive (mg), which is quantitative, and wether it is high copper level (400 ppm) or low copper level (0 ppm), which would be categorical.
         
 ###2.d.	
-Describe the data collection technique: is it experimental or observational?  
     
 >The data collection technique is experimental since there are two types of groups given different treatments, in this case in the shape of different diets. 
 
 ###2.e.	
-Exploratory data analysis: provide the summary statistics (mean and standard deviation) for each explanatory variable and the response.  In addition, provide a scatterplot of each explanatory variable versus the response.  Graphs should have proper x and y axis labels.  Discuss the observed relationships and possible implications on the structure of the regression model (first order model or higher order models).  
+Exploratory data analysis: We will provide the summary statistics for each explanatory variable and the response.  We also provide a scatterplot of each explanatory variable versus the response.  
         
 ```{r}
 #Provide R code and output/graphs 
@@ -302,9 +287,9 @@ plot(factor(poultry$CuLevel), poultry$FeedEffRatio, xlab = "Copper Level", ylab 
 ```
     
 >The dataset consists the respone variable being FeedEffRatio and the two explanatory variables being CuLevel and Additive.  The CuLevel is wether the chickens diet consisted of low Copper(0ppm) or high Copper(400ppm), which could be viewed as a category so the mean and median of 200 would not be to useful, it has a standard deviation of 201.6878ppm. The diet consisted of a certain amout of additive ranging from 0 to 100 mg, it has a mean of 50mg and a standard deviation of 34.44475mg. The responese variable, the Feed Efficiency Ratio has a mean of 2.778g and a standard deviation of 1.077504g. From the observed scatterplots, it appears that the amount of additive and the Feed Efficiecy Ration have a positive linear relationship.  We can also observe that between the two differenct Copper levles and the Feed Efficiency Ratio, there appears to be no relationship, as the feed efficienciy ratio is similar for either group. 
-###2.f0.	
-Determine the coefficients for each variable in the model and provide an interpretation of each parameter in the context of the problem. (Use the model proposed by the researchers, regardless of your conclusions in 2.d.)  
 
+###2.f0.	
+Determine the coefficients for each variable in the model and provide an interpretation of each parameter in the context of the problem. 
 
 ```{r}
 #Provide R code and output/graphs  
@@ -316,7 +301,7 @@ summary(model.fer)
 >From the summary of the proposed model we can see that the feed efficiency ratio is 1.287 when the additive is zero and the Copper level is zero as well, this is the intercept coefficient. Also, holding the Copper level constant, a one unit increase in additive (mg) will increase the feed efficiency ratio by 0.0290g. Finally, when we hold the additivie constant, a high level of copper (400ppm) will increase the feed efficiency ratio by 0.0002g.
 
 ###2.g. 
-Interpret the correct $R^2$ value in the context of the model variables. Assess the strength of the predictive power of the model.  
+We interpret the correct $R^2$ value in the context of the model variables. We also assess the strength of the predictive power of the model.  
         
 >The correct $R^2$ value in the context of the model is the Adjusted R-squared of 0.8564 since we are doing multiple regression. This tells us that 85.64% of variability in the feed efficiency ratio is explained by a linear model with additive and Copper level. 
  
@@ -341,8 +326,7 @@ plot(poultry$CuLevel, poultry$Additive)
 ###2.i.	
 Conduct appropriate testing for the assumptions of Regression Analysis.  
 
-####2.i.i.	
-Did the observations pass the equal variance assumption?  
+####2.i.i.	 
     
 ```{r}
 #Provide R code and output/graphs 
@@ -352,8 +336,7 @@ plot(model.fer, 1)
 >The observations appear to meet the equal variance assumption because the data points are evenly spread out from zero.  About half the data points have a negative residuals and half of them have a positive residual and have a parabola shape. 
             
 
-####2.i.ii.	
-Did the observations pass the independence assumption?   
+####2.i.ii.	  
                   
 ```{r}
 #Provide R code and output/graphs  
@@ -364,8 +347,7 @@ plot(model.fer)
 >In this case the observations appear to have a pattern resembling curvature in the residuals versus the fitted values. They are not randombly distributed about zero, therefore the assumption of independence is not satisfied. 
             
 
-####2.i.iii. 
-Did the observations pass the normality assumption?    
+####2.i.iii.    
                   
 ```{r}
 #Provide R code and output/graphs 
@@ -375,8 +357,7 @@ plot(model.fer, 2)
 >Judging from the QQ plot, we can say that the data does appear to meet the normality assumption.  There is approximatley a straight line relationship between the quantiles of our data and the quantiles from the normal distribution. 
             
 
-####2.i.iv.	
-Did the observations pass the no outlier assumption?  
+####2.i.iv.	  
         
 ```{r}
 #Provide R code and output/graphs  
@@ -390,13 +371,11 @@ plot(model.fer, 5)
 The researchers decide to switch to a model that also includes a 2nd order and 3rd order term for Additive Level.
 
 ####2.j.i.
-Write out the new model using $\hat{y}$, $\beta$ values, and $X$ values. (You might want to borrow the model from the Problem 2 description and modify it.)
-
+Write out the new model using $\hat{y}$, $\beta$ values, and $X$ values.
 >$\hat{y}_{FER}=\hat{\beta}_0+\hat{\beta}_1x_{add}+\hat{\beta}_2x_{Cu} +\hat{\beta}_3x_{Cu}^2 + \hat{\beta}_4x_{Cu}^3$
 
 ####2.j.ii.	
-Determine the coefficients for each variable in the model. If possible, interpret the parameter estimates as usual. If not possible, explain why not. 
-
+Determine the coefficients for each variable in the model. If possible, interpret the parameter estimates as usual. 
 ```{r}
 #Provide R code and output/graphs  
 add2 <- poultry$Additive * poultry$Additive 
